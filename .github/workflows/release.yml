@@ -1,0 +1,77 @@
+# CryptoKit 自动发布工作流
+# ---------------------------------------------------------------
+# 触发：push v* tag（如 v1.0.0）或手动运行 → 构建 Windows WinUI3 并发布 GitHub Release
+# 产物：CryptoKit-<tag>-win-x64.zip（含 CryptoKit.exe + CryptoKitEngine.exe，
+#       解压后整目录复制到任意位置即可运行）
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 构建 Windows (win-x64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      # Go 1.26（go.mod 要求）
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache: true
+
+      # .NET 10 SDK（WinUI3 目标框架 net10.0-windows10.0.19041.0，WindowsAppSDK 2.4.0）
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # C# WinUI3 前端（框架依赖 WinAppSDK + 引导器自动初始化；产物小，运行时一次安装）
+      # 注意：原生 WinUI3 需显式指定 Platform=x64（非 AnyCPU）
+      - name: 编译 C# WinUI3 前端
+        run: dotnet publish winui3/CryptoKit/CryptoKit.csproj -c Release -r win-x64 -p:Platform=x64 --self-contained false -o publish
+
+      # Go 密码引擎（纯静态，无 cgo、无运行时依赖）
+      - name: 编译 Go 密码引擎
+        shell: bash
+        env:
+          CGO_ENABLED: '0'
+          GOOS: windows
+          GOARCH: amd64
+        run: go build -trimpath -ldflags "-s -w" -o publish/CryptoKitEngine.exe ./cmd/engine
+
+      - name: 打包 zip
+        shell: pwsh
+        run: Compress-Archive -Path "publish\*" -DestinationPath "CryptoKit-${{ github.ref_name }}-win-x64.zip" -CompressionLevel Optimal
+
+      - name: 发布 GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: CryptoKit-${{ github.ref_name }}-win-x64.zip
+          body: |
+            ## CryptoKit ${{ github.ref_name }}
+
+            🛡️ 密码算法工具箱 · WinUI3 原生版，所有计算在本地完成，**数据不离开本机**。
+
+            ### ✨ 主要功能
+            - **对称加密**：AES-128/192/256 全模式、ChaCha20-Poly1305、AES-SIV/GCM-SIV、DES/3DES、RC4、FPE 等
+            - **国密算法**：SM2 / SM3 / SM4 / SM9 / ZUC（GM/T 标准）
+            - **后量子密码**：ML-KEM、ML-DSA、SLH-DSA、Falcon、HQC（NIST FIPS 203/204/205）
+            - **非对称加密**：RSA、ECDSA/ECDH、X25519 / Ed25519 / Ed448 等
+            - **哈希 / MAC / KDF**：SHA 全系、BLAKE、HMAC、PBKDF2、HKDF、Argon2、scrypt 等
+            - **FPE 格式保留加密**：FF1、FF3-1、FFX
+            - **金融密码工具**：PIN Block、CVV、PVV、EMV、Retail MAC
+            - **工具箱**：编解码、证书、TLS/TLCP、JWT、文件加解密等
+
+            ### 📦 产物说明
+            - `CryptoKit-...-win-x64.zip`：Windows 11 版，解压后整目录复制即可运行（免 WebView2）
+            - 需要 .NET 10 桌面运行时（https://dotnet.microsoft.com/download/dotnet/10.0）
+            - 需要 Windows App SDK 运行时（https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads）
+            - 关闭后零残留：不产生临时文件、不占用 C 盘缓存
+            - 未签名；首次运行如遇 SmartScreen 提示，选择「仍要运行」

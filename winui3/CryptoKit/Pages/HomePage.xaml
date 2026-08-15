@@ -1,0 +1,31 @@
+<Page
+    x:Class="CryptoKit.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer>
+        <StackPanel Padding="40,32" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+
+            <TextBlock Text="CryptoKit" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="全平台密码算法工具箱 · WinUI3 原生版"
+                       Style="{StaticResource SubtitleTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+            <TextBlock Text="所有计算均在本地完成，数据不离开本机。"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       TextWrapping="Wrap"/>
+
+            <InfoBar Severity="Informational"
+                     IsOpen="True"
+                     Title="原生 WinUI3 应用"
+                     Message="Mica 毛玻璃、系统强调色、标题栏均为系统原生，无 WebView2 缓存，关闭后零残留。"/>
+
+            <TextBlock Text="功能分组" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="联调：报文收发、TLS / TLCP"/>
+            <TextBlock Text="对称：对称算法、金融算法"/>
+            <TextBlock Text="非对称：公钥算法、证书管理、后量子"/>
+            <TextBlock Text="摘要：哈希摘要、MAC / KDF"/>
+            <TextBlock Text="工具：转换工具、大数运算、文件加密"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
