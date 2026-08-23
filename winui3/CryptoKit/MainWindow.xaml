@@ -19,7 +19,7 @@
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0" Spacing="10">
                 <Border Width="28" Height="28" CornerRadius="7" Background="{ThemeResource AccentFillColorDefaultBrush}">
-                    <SymbolIcon Symbol="Shield" Foreground="White" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <FontIcon Glyph="&#xE7BA;" FontFamily="Segoe MDL2 Assets" Foreground="White" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
                 <StackPanel Spacing="0">
                     <TextBlock Text="CryptoKit" FontSize="14" FontWeight="SemiBold"/>
@@ -37,7 +37,7 @@
                     Padding="8"
                     Click="OnThemeClick"
                     ToolTipService.ToolTip="切换主题（跟随系统 / 浅色 / 深色）">
-                <SymbolIcon Symbol="Brightness" Width="16" Height="16"/>
+                <FontIcon Glyph="&#xE706;" FontFamily="Segoe MDL2 Assets" Width="16" Height="16"/>
             </Button>
         </Grid>
 
