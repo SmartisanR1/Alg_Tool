@@ -41,9 +41,6 @@ public sealed partial class MainWindow : Window
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         SetTitleBar(AppTitleBar);
 
-        // 设置窗口/任务栏图标（appicon.ico 已复制到输出目录）
-        SetAppIcon();
-
         // 为主题按钮让出右侧系统标题栏按钮（最小化/最大化/关闭）的空间
         var rightInset = Math.Max(AppWindow.TitleBar.RightInset, 138);
         ThemeButton.Margin = new Thickness(0, 0, rightInset + 8, 0);
@@ -70,26 +67,24 @@ public sealed partial class MainWindow : Window
     {
         ContentFrame.Content = tag switch
         {
-            "home" => new HomePage(),
+            "home" => new HomePage(Navigate),
             "hash" => new HashPage(_engine),
-            // 其余功能页面：占位，后续逐一补齐
+            "keys" => new KeyGeneratorPage(_engine),
+            "symmetric" => new SymmetricPage(_engine),
+            "asymmetric" => new AsymmetricPage(_engine),
+            "pqc" => new PQCPage(_engine),
+            "packet" => new PacketPage(_engine),
+            "tools" => new ConverterPage(_engine),
             _ => new PlaceholderPage(TitleFor(tag)),
         };
     }
 
     private static string TitleFor(string tag) => tag switch
     {
-        "packet" => "报文收发",
-        "tls" => "TLS / TLCP",
+        "packet" => "协议联调",
         "symmetric" => "对称算法",
-        "finance" => "金融算法",
-        "asymmetric" => "公钥算法",
-        "cert" => "证书管理",
+        "asymmetric" => "公钥算法 / 国密",
         "pqc" => "后量子",
-        "mac" => "MAC / KDF",
-        "tools" => "转换工具",
-        "bigint" => "大数运算",
-        "file" => "文件加密",
         _ => tag,
     };
 
@@ -111,20 +106,6 @@ public sealed partial class MainWindow : Window
             _ => "深色模式（点击切换）",
         };
         ToolTipService.SetToolTip(ThemeButton, label);
-    }
-
-    private void SetAppIcon()
-    {
-        try
-        {
-            var baseDir = AppContext.BaseDirectory;
-            var iconPath = System.IO.Path.Combine(baseDir, "appicon.ico");
-            if (!System.IO.File.Exists(iconPath))
-                iconPath = System.IO.Path.Combine(baseDir, "Assets", "appicon.ico");
-            if (System.IO.File.Exists(iconPath))
-                AppWindow.SetIcon(iconPath);
-        }
-        catch { /* 图标加载失败不影响运行 */ }
     }
 
     private void OnClosed(object sender, WindowEventArgs args)

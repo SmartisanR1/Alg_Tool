@@ -4,12 +4,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ScrollViewer>
-        <StackPanel Padding="32,24" Spacing="16" MaxWidth="720" HorizontalAlignment="Stretch">
-
-            <TextBlock Text="哈希摘要" Style="{StaticResource TitleTextBlockStyle}"/>
-
-            <TextBlock Text="算法" FontWeight="SemiBold"/>
-            <ComboBox x:Name="AlgoBox" SelectedIndex="3" HorizontalAlignment="Stretch">
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1100" HorizontalAlignment="Center">
+            <StackPanel Spacing="6">
+                <TextBlock Text="哈希摘要" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="输入文本，选择算法，即刻得到可复制的十六进制摘要。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+            <TabView IsAddTabButtonVisible="False">
+                <TabViewItem Header="计算摘要" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="算法" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="AlgoBox" SelectedIndex="3" HorizontalAlignment="Stretch">
                 <ComboBoxItem Content="MD5"/>
                 <ComboBoxItem Content="SHA1"/>
                 <ComboBoxItem Content="SHA224"/>
@@ -31,22 +37,25 @@
                 <ComboBoxItem Content="BLAKE3"/>
                 <ComboBoxItem Content="RIPEMD160"/>
                 <ComboBoxItem Content="SM3"/>
-            </ComboBox>
-
-            <TextBlock Text="输入（文本）" FontWeight="SemiBold"/>
-            <TextBox x:Name="InputBox" Height="96" AcceptsReturn="True"
-                     TextWrapping="Wrap" PlaceholderText="输入要计算哈希的内容…"/>
-
-            <Button x:Name="ComputeButton"
-                    Content="计算哈希"
-                    Style="{StaticResource AccentButtonStyle}"
-                    HorizontalAlignment="Stretch"
-                    Click="OnComputeClick"/>
-
-            <TextBlock Text="结果" FontWeight="SemiBold"/>
-            <TextBox x:Name="ResultBox" IsReadOnly="True" Height="120"
-                     TextWrapping="Wrap" FontFamily="Consolas"
-                     PlaceholderText="结果将显示在这里" IsSpellCheckEnabled="False"/>
+                            </ComboBox>
+                            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="提示"
+                                     Message="输入按 UTF-8 编码处理；结果统一显示为大写 Hex。" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="12">
+                            <TextBlock Text="输入文本" FontWeight="SemiBold"/>
+                            <TextBox x:Name="InputBox" Height="150" AcceptsReturn="True" TextWrapping="Wrap"
+                                     PlaceholderText="输入要计算哈希的内容…"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Button x:Name="ComputeButton" Content="计算摘要" Style="{StaticResource AccentButtonStyle}" Click="OnComputeClick"/>
+                                <Button Content="清空" Click="OnClearClick"/>
+                            </StackPanel>
+                            <TextBlock Text="结果" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="ResultBox" IsReadOnly="True" Height="150" TextWrapping="Wrap" FontFamily="Consolas"
+                                     PlaceholderText="计算结果将显示在这里" IsSpellCheckEnabled="False"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+            </TabView>
         </StackPanel>
     </ScrollViewer>
 </Page>

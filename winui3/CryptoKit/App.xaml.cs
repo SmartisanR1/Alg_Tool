@@ -1,11 +1,12 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using CryptoKit.Services;
 
 namespace CryptoKit;
 
 /// <summary>
-/// 应用入口：拉起 Go 密码引擎子进程、加载便携设置、应用主题，然后展示主窗口。
-/// 关闭窗口时引擎随进程退出（见 MainWindow.Closed），不留任何临时文件。
+/// 应用入口：拉起随程序提供的 Go 密码引擎、加载便携设置、应用主题，然后展示主窗口。
+/// 前端以单文件便携模式发布，密码引擎是唯一需要保留在同目录的协作程序。
 /// </summary>
 public partial class App : Application
 {
@@ -23,12 +24,31 @@ public partial class App : Application
     {
         _settings.Load();
 
-        // 拉起密码引擎（CryptoKitEngine.exe，与主程序同目录）
-        // 主题（system/light/dark）由 MainWindow 在构造时应用；强调色无需处理——
-        // WinUI3 控件通过 Fluent 2 主题资源自动跟随系统强调色。
-        _engine.Start();
-
         MainAppWindow = new MainWindow(_engine, _settings);
         MainAppWindow.Activate();
+
+        // 拉起密码引擎（CryptoKitEngine.exe，与主程序同目录）。启动失败时仍展示窗口，
+        // 明确告知用户缺失的文件，避免未处理异常造成“点击没有反应”。
+        try
+        {
+            _engine.Start();
+        }
+        catch (Exception ex)
+        {
+            _ = ShowEngineStartErrorAsync(ex.Message);
+        }
+    }
+
+    private static async Task ShowEngineStartErrorAsync(string detail)
+    {
+        if (MainAppWindow?.Content is not FrameworkElement root) return;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = root.XamlRoot,
+            Title = "无法启动本地密码引擎",
+            Content = "请确认 CryptoKitEngine.exe 与 CryptoKit.exe 位于同一目录，然后重新打开应用。\n\n" + detail,
+            CloseButtonText = "知道了",
+        };
+        await dialog.ShowAsync();
     }
 }

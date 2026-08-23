@@ -65,4 +65,10 @@ public sealed partial class HashPage : Page
             ComputeButton.Content = "计算哈希";
         }
     }
+
+    private void OnClearClick(object sender, RoutedEventArgs e)
+    {
+        InputBox.Text = string.Empty;
+        ResultBox.Text = string.Empty;
+    }
 }

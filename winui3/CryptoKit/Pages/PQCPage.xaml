@@ -1,0 +1,201 @@
+<Page
+    x:Class="CryptoKit.Pages.PQCPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1160" HorizontalAlignment="Center">
+            <StackPanel Spacing="6">
+                <TextBlock Text="后量子密码" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="ML-KEM、ML-DSA、SLH-DSA、Falcon、HQC 与 AIGIS-sig 的本地密钥生成、封装与签名验签。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <TabView IsAddTabButtonVisible="False">
+                <TabViewItem Header="ML-KEM" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="参数集" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="MlkemParamBox" SelectedIndex="0">
+                                <ComboBoxItem Content="ML-KEM-512" Tag="ML-KEM-512"/>
+                                <ComboBoxItem Content="ML-KEM-768" Tag="ML-KEM-768"/>
+                                <ComboBoxItem Content="ML-KEM-1024" Tag="ML-KEM-1024"/>
+                            </ComboBox>
+                            <Button x:Name="MlkemGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnMlkemGen"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                                <Button x:Name="MlkemEncapBtn" Content="封装" Click="OnMlkemEncap"/>
+                                <Button x:Name="MlkemDecapBtn" Content="解封装" Click="OnMlkemDecap"/>
+                            </StackPanel>
+                            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="流程"
+                                     Message="先生成密钥对，再用公钥「封装」得到密文与共享密钥，最后用私钥「解封装」还原共享密钥。"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MlkemPubBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MlkemPrivBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="密文（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MlkemCipherBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="封装得到的密文将显示在这里"/>
+                            <TextBlock Text="共享密钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MlkemSecretBox" Height="60" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="共享密钥将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="ML-DSA" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="参数集" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="MldsaParamBox" SelectedIndex="0">
+                                <ComboBoxItem Content="ML-DSA-44" Tag="ML-DSA-44"/>
+                                <ComboBoxItem Content="ML-DSA-65" Tag="ML-DSA-65"/>
+                                <ComboBoxItem Content="ML-DSA-87" Tag="ML-DSA-87"/>
+                            </ComboBox>
+                            <Button x:Name="MldsaGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnMldsaGen"/>
+                            <TextBlock Text="待签名数据（文本）" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="MldsaDataInput" AcceptsReturn="True" TextWrapping="Wrap" Height="90" PlaceholderText="输入要签名的内容…"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="MldsaSignBtn" Content="签名" Click="OnMldsaSign"/>
+                                <Button x:Name="MldsaVerifyBtn" Content="验签" Click="OnMldsaVerify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MldsaPubBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MldsaPrivBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="签名 / 验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="MldsaSigBox" Height="120" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="签名或验签结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="SLH-DSA" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="参数集" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="SlhdsaParamBox" SelectedIndex="0">
+                                <ComboBoxItem Content="SHA2-128s" Tag="SLH-DSA-SHA2-128s"/>
+                                <ComboBoxItem Content="SHAKE-128s" Tag="SLH-DSA-SHAKE-128s"/>
+                                <ComboBoxItem Content="SHA2-128f" Tag="SLH-DSA-SHA2-128f"/>
+                                <ComboBoxItem Content="SHAKE-128f" Tag="SLH-DSA-SHAKE-128f"/>
+                                <ComboBoxItem Content="SHA2-192s" Tag="SLH-DSA-SHA2-192s"/>
+                                <ComboBoxItem Content="SHAKE-192s" Tag="SLH-DSA-SHAKE-192s"/>
+                                <ComboBoxItem Content="SHA2-192f" Tag="SLH-DSA-SHA2-192f"/>
+                                <ComboBoxItem Content="SHAKE-192f" Tag="SLH-DSA-SHAKE-192f"/>
+                                <ComboBoxItem Content="SHA2-256s" Tag="SLH-DSA-SHA2-256s"/>
+                                <ComboBoxItem Content="SHAKE-256s" Tag="SLH-DSA-SHAKE-256s"/>
+                                <ComboBoxItem Content="SHA2-256f" Tag="SLH-DSA-SHA2-256f"/>
+                                <ComboBoxItem Content="SHAKE-256f" Tag="SLH-DSA-SHAKE-256f"/>
+                            </ComboBox>
+                            <Button x:Name="SlhdsaGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnSlhdsaGen"/>
+                            <TextBlock Text="待签名数据（文本）" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="SlhdsaDataInput" AcceptsReturn="True" TextWrapping="Wrap" Height="90" PlaceholderText="输入要签名的内容…"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="SlhdsaSignBtn" Content="签名" Click="OnSlhdsaSign"/>
+                                <Button x:Name="SlhdsaVerifyBtn" Content="验签" Click="OnSlhdsaVerify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="SlhdsaPubBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="SlhdsaPrivBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="签名 / 验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="SlhdsaSigBox" Height="120" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="签名或验签结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="Falcon" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="参数集" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="FalconParamBox" SelectedIndex="0">
+                                <ComboBoxItem Content="Falcon-512" Tag="Falcon-512"/>
+                                <ComboBoxItem Content="Falcon-1024" Tag="Falcon-1024"/>
+                            </ComboBox>
+                            <Button x:Name="FalconGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnFalconGen"/>
+                            <TextBlock Text="待签名数据（文本）" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="FalconDataInput" AcceptsReturn="True" TextWrapping="Wrap" Height="90" PlaceholderText="输入要签名的内容…"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="FalconSignBtn" Content="签名" Click="OnFalconSign"/>
+                                <Button x:Name="FalconVerifyBtn" Content="验签" Click="OnFalconVerify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="FalconPubBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="FalconPrivBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="签名 / 验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="FalconSigBox" Height="120" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="签名或验签结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="HQC" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="参数集" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="HqcParamBox" SelectedIndex="0">
+                                <ComboBoxItem Content="HQC-128" Tag="HQC-128"/>
+                                <ComboBoxItem Content="HQC-192" Tag="HQC-192"/>
+                                <ComboBoxItem Content="HQC-256" Tag="HQC-256"/>
+                            </ComboBox>
+                            <Button x:Name="HqcGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnHqcGen"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                                <Button x:Name="HqcEncapBtn" Content="封装" Click="OnHqcEncap"/>
+                                <Button x:Name="HqcDecapBtn" Content="解封装" Click="OnHqcDecap"/>
+                            </StackPanel>
+                            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="流程"
+                                     Message="先生成密钥对，再用公钥「封装」得到密文与共享密钥，最后用私钥「解封装」还原共享密钥。"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="HqcPubBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="HqcPrivBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="密文（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="HqcCipherBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="封装得到的密文将显示在这里"/>
+                            <TextBlock Text="共享密钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="HqcSecretBox" Height="60" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="共享密钥将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="AIGIS-sig" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="参数集" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="AigisParamBox" SelectedIndex="0">
+                                <ComboBoxItem Content="AIGIS-sig-1" Tag="AIGIS-sig-1"/>
+                                <ComboBoxItem Content="AIGIS-sig-2" Tag="AIGIS-sig-2"/>
+                                <ComboBoxItem Content="AIGIS-sig-3" Tag="AIGIS-sig-3"/>
+                            </ComboBox>
+                            <Button x:Name="AigisGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnAigisGen"/>
+                            <TextBlock Text="待签名数据（文本）" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="AigisDataInput" AcceptsReturn="True" TextWrapping="Wrap" Height="90" PlaceholderText="输入要签名的内容…"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="AigisSignBtn" Content="签名" Click="OnAigisSign"/>
+                                <Button x:Name="AigisVerifyBtn" Content="验签" Click="OnAigisVerify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="AigisPubBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="AigisPrivBox" Height="90" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="签名 / 验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="AigisSigBox" Height="120" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="签名或验签结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+            </TabView>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

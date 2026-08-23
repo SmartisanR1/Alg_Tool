@@ -4,28 +4,58 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ScrollViewer>
-        <StackPanel Padding="40,32" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+        <StackPanel Padding="40,32,40,48" Spacing="28" MaxWidth="1180" HorizontalAlignment="Center">
+            <StackPanel Spacing="8">
+                <TextBlock Text="密码工作台" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="在本机完成计算、转换与密钥操作。选择一个工具立即开始。"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
 
-            <TextBlock Text="CryptoKit" Style="{StaticResource TitleTextBlockStyle}"/>
-            <TextBlock Text="全平台密码算法工具箱 · WinUI3 原生版"
-                       Style="{StaticResource SubtitleTextBlockStyle}"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            <InfoBar Severity="Success" IsOpen="True" IsClosable="False" Title="本地计算模式"
+                     Message="数据仅在此设备和本地密码引擎之间处理，不上传、不写入临时工作文件。" />
 
-            <TextBlock Text="所有计算均在本地完成，数据不离开本机。"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                       TextWrapping="Wrap"/>
+            <Grid ColumnSpacing="16" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Tag="hash" Click="OnToolClick" HorizontalContentAlignment="Stretch" Padding="20,18">
+                    <StackPanel Spacing="10" HorizontalAlignment="Left">
+                        <SymbolIcon Symbol="Document" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
+                        <TextBlock Text="哈希摘要" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="SHA-2、SHA-3、SM3、BLAKE 系列" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="1" Tag="keys" Click="OnToolClick" HorizontalContentAlignment="Stretch" Padding="20,18">
+                    <StackPanel Spacing="10" HorizontalAlignment="Left">
+                        <SymbolIcon Symbol="Permissions" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
+                        <TextBlock Text="密钥生成" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="快速生成 RSA 密钥对并导出 PEM" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="2" Tag="tools" Click="OnToolClick" HorizontalContentAlignment="Stretch" Padding="20,18">
+                    <StackPanel Spacing="10" HorizontalAlignment="Left">
+                        <SymbolIcon Symbol="Switch" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
+                        <TextBlock Text="编码转换" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="文本、Hex 与 Base64 的本地转换" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
 
-            <InfoBar Severity="Informational"
-                     IsOpen="True"
-                     Title="原生 WinUI3 应用"
-                     Message="Mica 毛玻璃、系统强调色、标题栏均为系统原生，无 WebView2 缓存，关闭后零残留。"/>
-
-            <TextBlock Text="功能分组" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="联调：报文收发、TLS / TLCP"/>
-            <TextBlock Text="对称：对称算法、金融算法"/>
-            <TextBlock Text="非对称：公钥算法、证书管理、后量子"/>
-            <TextBlock Text="摘要：哈希摘要、MAC / KDF"/>
-            <TextBlock Text="工具：转换工具、大数运算、文件加密"/>
+            <StackPanel Spacing="12">
+                <TextBlock Text="工具分类" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <Grid ColumnSpacing="24">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="8">
+                        <TextBlock Text="对称密码与金融密码" FontWeight="SemiBold"/>
+                        <TextBlock Text="AES、DES、SM4、FPE、PIN Block、EMV 等算法能力。" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="8">
+                        <TextBlock Text="公钥、国密与后量子" FontWeight="SemiBold"/>
+                        <TextBlock Text="RSA、ECC、SM2/3/4、SM9、ML-KEM 与数字签名工具。" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </Page>

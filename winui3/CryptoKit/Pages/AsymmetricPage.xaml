@@ -1,0 +1,340 @@
+<Page
+    x:Class="CryptoKit.Pages.AsymmetricPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1160" HorizontalAlignment="Center">
+            <StackPanel Spacing="6">
+                <TextBlock Text="公钥算法 / 国密" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="RSA、ECC、Ed25519、SM2/3/4/9 与 ZUC 的本地密钥生成、加解密与签名验签。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <TabView IsAddTabButtonVisible="False">
+                <TabViewItem Header="RSA" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="生成密钥" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="RsaBitsBox" SelectedIndex="0">
+                                <ComboBoxItem Content="2048 位（推荐）" Tag="2048"/>
+                                <ComboBoxItem Content="3072 位" Tag="3072"/>
+                                <ComboBoxItem Content="4096 位" Tag="4096"/>
+                            </ComboBox>
+                            <Button x:Name="RsaGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnRsaGenerate"/>
+                            <TextBlock Text="加解密" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <ComboBox x:Name="RsaPaddingBox" SelectedIndex="0">
+                                <ComboBoxItem Content="PKCS#1 v1.5" Tag="PKCS1v15"/>
+                                <ComboBoxItem Content="OAEP" Tag="OAEP"/>
+                            </ComboBox>
+                            <ComboBox x:Name="RsaHashBox" SelectedIndex="1">
+                                <ComboBoxItem Content="SHA1"/>
+                                <ComboBoxItem Content="SHA256"/>
+                                <ComboBoxItem Content="SHA512"/>
+                            </ComboBox>
+                            <TextBox x:Name="RsaDataInput" PlaceholderText="待加密/解密文本"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="RsaEncBtn" Content="加密" Click="OnRsaEncrypt"/>
+                                <Button x:Name="RsaDecBtn" Content="解密" Click="OnRsaDecrypt"/>
+                            </StackPanel>
+                            <TextBlock Text="签名 / 验签" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <ComboBox x:Name="RsaSignHashBox" SelectedIndex="0">
+                                <ComboBoxItem Content="SHA256"/>
+                                <ComboBoxItem Content="SHA384"/>
+                                <ComboBoxItem Content="SHA512"/>
+                            </ComboBox>
+                            <ComboBox x:Name="RsaSignPaddingBox" SelectedIndex="0">
+                                <ComboBoxItem Content="PKCS#1 v1.5" Tag="PKCS1v15"/>
+                                <ComboBoxItem Content="PSS" Tag="PSS"/>
+                            </ComboBox>
+                            <TextBox x:Name="RsaSignDataInput" PlaceholderText="待签名/验签文本"/>
+                            <TextBox x:Name="RsaVerifySigInput" PlaceholderText="验签时粘贴签名（Hex）"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="RsaSignBtn" Content="签名" Click="OnRsaSign"/>
+                                <Button x:Name="RsaVerifyBtn" Content="验签" Click="OnRsaVerify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaPubBox" Height="110" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaPrivBox" Height="110" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="公钥（Hex，加密用）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaPubKeyInput" FontFamily="Consolas" PlaceholderText="公钥（PEM 或 Hex）"/>
+                            <TextBlock Text="私钥（Hex，解密用）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaPrivKeyInput" FontFamily="Consolas" PlaceholderText="私钥（PEM 或 Hex）"/>
+                            <TextBlock Text="加解密结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                            <TextBlock Text="签名/验签用私钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaSignPrivInput" FontFamily="Consolas" PlaceholderText="私钥（PEM 或 Hex）"/>
+                            <TextBlock Text="验签用公钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaVerifyPubInput" FontFamily="Consolas" PlaceholderText="公钥（PEM 或 Hex）"/>
+                            <TextBlock Text="签名/验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="RsaSignResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="签名或验签结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="ECC" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="生成密钥" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="EccCurveBox" SelectedIndex="0">
+                                <ComboBoxItem Content="P-256" Tag="P-256"/>
+                                <ComboBoxItem Content="P-384" Tag="P-384"/>
+                                <ComboBoxItem Content="P-521" Tag="P-521"/>
+                            </ComboBox>
+                            <Button x:Name="EccGenBtn" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnEccGenerate"/>
+                            <TextBlock Text="签名 / 验签" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <ComboBox x:Name="EccHashBox" SelectedIndex="0">
+                                <ComboBoxItem Content="SHA256"/>
+                                <ComboBoxItem Content="SHA384"/>
+                                <ComboBoxItem Content="SHA512"/>
+                            </ComboBox>
+                            <TextBox x:Name="EccDataInput" PlaceholderText="待签名/验签文本"/>
+                            <TextBox x:Name="EccSigInput" PlaceholderText="验签时粘贴签名（Hex）"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="EccSignBtn" Content="签名" Click="OnEccSign"/>
+                                <Button x:Name="EccVerifyBtn" Content="验签" Click="OnEccVerify"/>
+                            </StackPanel>
+                            <TextBlock Text="ECDH 密钥交换" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="EcdhPrivInput" FontFamily="Consolas" PlaceholderText="本端私钥（PEM/Hex）"/>
+                            <TextBox x:Name="EcdhPeerInput" FontFamily="Consolas" PlaceholderText="对方公钥（PEM/Hex）"/>
+                            <Button x:Name="EcdhBtn" Content="计算共享密钥" Click="OnEcdh"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EccPubBox" Height="110" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EccPrivBox" Height="110" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="签名用私钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EccPrivKeyInput" FontFamily="Consolas" PlaceholderText="私钥（PEM 或 Hex）"/>
+                            <TextBlock Text="验签用公钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EccPubKeyInput" FontFamily="Consolas" PlaceholderText="公钥（PEM 或 Hex）"/>
+                            <TextBlock Text="签名/验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EccResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                            <TextBlock Text="共享密钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EcdhResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="共享密钥将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="Ed25519 · X25519" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="生成密钥" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="EdAlgoBox" SelectedIndex="0">
+                                <ComboBoxItem Content="Ed25519" Tag="Ed25519"/>
+                                <ComboBoxItem Content="X25519" Tag="X25519"/>
+                            </ComboBox>
+                            <Button x:Name="EdGenBtn" Content="生成密钥" Style="{StaticResource AccentButtonStyle}" Click="OnEdGenerate"/>
+                            <TextBlock Text="Ed25519 签名 / 验签" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="EdDataInput" PlaceholderText="待签名/验签文本"/>
+                            <TextBox x:Name="EdSigInput" PlaceholderText="验签时粘贴签名（Hex）"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="EdSignBtn" Content="签名" Click="OnEdSign"/>
+                                <Button x:Name="EdVerifyBtn" Content="验签" Click="OnEdVerify"/>
+                            </StackPanel>
+                            <TextBlock Text="X25519 密钥交换" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="X25519PrivInput" FontFamily="Consolas" PlaceholderText="本端私钥（32 字节 Hex）"/>
+                            <TextBox x:Name="X25519PeerInput" FontFamily="Consolas" PlaceholderText="对方公钥（32 字节 Hex）"/>
+                            <Button x:Name="X25519Btn" Content="计算共享密钥" Click="OnX25519Exchange"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EdPubBox" Height="70" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EdPrivBox" Height="70" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="签名用私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EdPrivKeyInput" FontFamily="Consolas" PlaceholderText="Ed25519 私钥（64 字节 Hex）"/>
+                            <TextBlock Text="验签用公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EdPubKeyInput" FontFamily="Consolas" PlaceholderText="Ed25519 公钥（32 字节 Hex）"/>
+                            <TextBlock Text="签名/验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="EdResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                            <TextBlock Text="共享密钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="X25519ResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="共享密钥将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="SM2" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="生成密钥" FontWeight="SemiBold"/>
+                            <Button x:Name="Sm2GenBtn" Content="生成 SM2 密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnSm2Generate"/>
+                            <TextBlock Text="加解密" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <ComboBox x:Name="Sm2ModeBox" SelectedIndex="0">
+                                <ComboBoxItem Content="C1C3C2（推荐）" Tag="C1C3C2"/>
+                                <ComboBoxItem Content="C1C2C3" Tag="C1C2C3"/>
+                            </ComboBox>
+                            <TextBox x:Name="Sm2DataInput" PlaceholderText="待加密/解密文本"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="Sm2EncBtn" Content="加密" Click="OnSm2Encrypt"/>
+                                <Button x:Name="Sm2DecBtn" Content="解密" Click="OnSm2Decrypt"/>
+                            </StackPanel>
+                            <TextBlock Text="签名 / 验签" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="Sm2IdInput" PlaceholderText="用户 ID（默认 1234567812345678）"/>
+                            <TextBox x:Name="Sm2SignDataInput" PlaceholderText="待签名/验签文本"/>
+                            <TextBox x:Name="Sm2VerifySigInput" PlaceholderText="验签时粘贴签名（Hex）"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="Sm2SignBtn" Content="签名" Click="OnSm2Sign"/>
+                                <Button x:Name="Sm2VerifyBtn" Content="验签" Click="OnSm2Verify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="公钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2PubBox" Height="110" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2PrivBox" Height="110" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBlock Text="加密用公钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2PubKeyInput" FontFamily="Consolas" PlaceholderText="公钥（PEM 或 Hex）"/>
+                            <TextBlock Text="解密用私钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2PrivKeyInput" FontFamily="Consolas" PlaceholderText="私钥（PEM 或 Hex）"/>
+                            <TextBlock Text="加解密结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2ResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                            <TextBlock Text="签名用私钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2SignPrivInput" FontFamily="Consolas" PlaceholderText="私钥（PEM 或 Hex）"/>
+                            <TextBlock Text="验签用公钥（PEM/Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2VerifyPubInput" FontFamily="Consolas" PlaceholderText="公钥（PEM 或 Hex）"/>
+                            <TextBlock Text="签名/验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm2SignResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="SM3" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="SM3 摘要" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm3DataInput" AcceptsReturn="True" TextWrapping="Wrap" Height="120" PlaceholderText="输入要计算摘要的文本…"/>
+                            <Button x:Name="Sm3HashBtn" Content="计算 SM3 摘要" Style="{StaticResource AccentButtonStyle}" Click="OnSm3Hash"/>
+                            <TextBlock Text="SM3 HMAC" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="Sm3HmacKeyInput" FontFamily="Consolas" PlaceholderText="HMAC 密钥（Hex）"/>
+                            <TextBox x:Name="Sm3HmacDataInput" AcceptsReturn="True" TextWrapping="Wrap" Height="80" PlaceholderText="HMAC 数据（文本）"/>
+                            <Button x:Name="Sm3HmacBtn" Content="计算 SM3 HMAC" Click="OnSm3Hmac"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="摘要（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm3ResultBox" Height="100" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="SM3 摘要将显示在这里"/>
+                            <TextBlock Text="HMAC（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm3HmacResultBox" Height="100" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="HMAC 结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="SM4" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="模式" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="Sm4ModeBox" SelectedIndex="1">
+                                <ComboBoxItem Content="ECB" Tag="ECB"/>
+                                <ComboBoxItem Content="CBC" Tag="CBC"/>
+                                <ComboBoxItem Content="CFB" Tag="CFB"/>
+                                <ComboBoxItem Content="OFB" Tag="OFB"/>
+                                <ComboBoxItem Content="CTR" Tag="CTR"/>
+                                <ComboBoxItem Content="GCM" Tag="GCM"/>
+                            </ComboBox>
+                            <TextBlock Text="填充" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="Sm4PaddingBox" SelectedIndex="0">
+                                <ComboBoxItem Content="PKCS7" Tag="PKCS7"/>
+                                <ComboBoxItem Content="Zero" Tag="Zero"/>
+                                <ComboBoxItem Content="NoPadding" Tag="NoPadding"/>
+                            </ComboBox>
+                            <TextBlock Text="密钥（16 字节 Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm4KeyInput" FontFamily="Consolas" PlaceholderText="例如 0123456789ABCDEFFEDCBA9876543210"/>
+                            <TextBlock Text="初始向量 IV（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm4IvInput" FontFamily="Consolas" PlaceholderText="CBC/CFB/OFB/CTR/GCM 需要 16 字节 Hex"/>
+                            <TextBlock Text="数据（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm4DataInput" Height="120" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" PlaceholderText="例如 00112233445566778899AABBCCDDEEFF"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="Sm4EncBtn" Content="加密" Style="{StaticResource AccentButtonStyle}" Click="OnSm4Encrypt"/>
+                                <Button x:Name="Sm4DecBtn" Content="解密" Click="OnSm4Decrypt"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm4ResultBox" Height="140" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="计算结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="SM9" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="主密钥" FontWeight="SemiBold"/>
+                            <Button x:Name="Sm9MasterBtn" Content="生成主密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnSm9MasterKey"/>
+                            <TextBlock Text="用户密钥" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="Sm9UidInput" PlaceholderText="用户标识 UID（如 alice）"/>
+                            <Button x:Name="Sm9UserBtn" Content="生成用户密钥" Click="OnSm9UserKey"/>
+                            <TextBlock Text="加解密" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="Sm9DataInput" PlaceholderText="待加密/解密文本"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="Sm9EncBtn" Content="加密" Click="OnSm9Encrypt"/>
+                                <Button x:Name="Sm9DecBtn" Content="解密" Click="OnSm9Decrypt"/>
+                            </StackPanel>
+                            <TextBlock Text="签名 / 验签" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox x:Name="Sm9SignDataInput" PlaceholderText="待签名/验签文本"/>
+                            <TextBox x:Name="Sm9SignSigInput" PlaceholderText="验签时粘贴签名（Hex）"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="Sm9SignBtn" Content="签名" Click="OnSm9Sign"/>
+                                <Button x:Name="Sm9VerifyBtn" Content="验签" Click="OnSm9Verify"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="主私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9MasterPrivBox" Height="70" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="主私钥将显示在这里"/>
+                            <TextBlock Text="主公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9MasterPubBox" Height="70" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="主公钥将显示在这里"/>
+                            <TextBlock Text="用户私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9UserPrivBox" Height="70" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="用户私钥将显示在这里"/>
+                            <TextBlock Text="用户公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9UserPubBox" Height="70" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="用户公钥将显示在这里"/>
+                            <TextBlock Text="加解密结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9ResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                            <TextBlock Text="签名用用户私钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9SignPrivInput" FontFamily="Consolas" PlaceholderText="用户私钥（Hex）"/>
+                            <TextBlock Text="验签用主公钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9SignMasterPubInput" FontFamily="Consolas" PlaceholderText="主公钥（Hex）"/>
+                            <TextBlock Text="验签用 UID" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9SignUidInput" PlaceholderText="用户标识 UID"/>
+                            <TextBlock Text="签名/验签结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="Sm9SignResultBox" Height="60" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="ZUC" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="类型" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="ZucTypeBox" SelectedIndex="0">
+                                <ComboBoxItem Content="ZUC-128" Tag="ZUC-128"/>
+                                <ComboBoxItem Content="ZUC-256" Tag="ZUC-256"/>
+                            </ComboBox>
+                            <TextBlock Text="密钥（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="ZucKeyInput" FontFamily="Consolas" PlaceholderText="ZUC-128：16 字节；ZUC-256：32 字节"/>
+                            <TextBlock Text="初始向量 IV（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="ZucIvInput" FontFamily="Consolas" PlaceholderText="ZUC-128：16 字节；ZUC-256：25 字节"/>
+                            <TextBlock Text="数据（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="ZucDataInput" Height="120" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" PlaceholderText="待加解密数据（Hex）"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="ZucEncBtn" Content="加密" Style="{StaticResource AccentButtonStyle}" Click="OnZucEncrypt"/>
+                                <Button x:Name="ZucDecBtn" Content="解密" Click="OnZucDecrypt"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="结果（Hex）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="ZucResultBox" Height="140" FontFamily="Consolas" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="计算结果将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+            </TabView>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

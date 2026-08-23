@@ -1,0 +1,37 @@
+<Page
+    x:Class="CryptoKit.Pages.KeyGeneratorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1100" HorizontalAlignment="Center">
+            <StackPanel Spacing="6">
+                <TextBlock Text="密钥工具" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="在本地安全随机源中生成密钥材料，结果默认只保留在当前窗口。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+            <TabView IsAddTabButtonVisible="False">
+                <TabViewItem Header="生成 RSA 密钥" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="12">
+                            <TextBlock Text="RSA 模长" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="BitsBox" SelectedIndex="1">
+                                <ComboBoxItem Content="2048 位（推荐）" Tag="2048"/>
+                                <ComboBoxItem Content="3072 位" Tag="3072"/>
+                                <ComboBoxItem Content="4096 位" Tag="4096"/>
+                            </ComboBox>
+                            <Button x:Name="GenerateButton" Content="生成密钥对" Style="{StaticResource AccentButtonStyle}" Click="OnGenerateClick"/>
+                            <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="私钥提示"
+                                     Message="生成的私钥仅在当前窗口显示。导出或复制前请确认保存位置安全。" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="10">
+                            <TextBlock Text="公钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PublicKeyBox" Height="150" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBlock Text="私钥（PEM）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PrivateKeyBox" Height="220" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+            </TabView>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

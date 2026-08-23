@@ -37,6 +37,7 @@ public sealed class EngineClient : IDisposable
         var psi = new ProcessStartInfo
         {
             FileName = exe,
+            WorkingDirectory = AppContext.BaseDirectory,
             UseShellExecute = false,
             RedirectStandardInput = true,
             RedirectStandardOutput = true,

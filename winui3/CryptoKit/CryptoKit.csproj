@@ -14,24 +14,24 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!-- 非打包（unpackaged）+ 框架依赖 WinAppSDK：产物小，运行时一次安装、免 MSIX。
-         引导器自动初始化（Bootstrap.TryInitialize）定位已安装的 Windows App SDK 运行时。 -->
+    <!-- 便携发布：不安装、不依赖目标机器已有的 .NET 或 Windows App SDK。
+         发布时将 UI 收拢为单个 exe；CryptoKitEngine.exe 作为唯一同级协作进程。 -->
     <WindowsPackageType>None</WindowsPackageType>
-    <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
-    <WindowsAppSdkBootstrapInitialize>true</WindowsAppSdkBootstrapInitialize>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
     <!-- 只保留中/英卫星程序集，去掉其余语言包 -->
     <SatelliteResourceLanguages>en;zh-Hans</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- Windows App SDK：WinUI3 + Mica/Acrylic 后层 + Fluent 2 主题资源 -->
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.1.3" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.8249" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- 应用图标：嵌入 exe（ApplicationIcon 已在上面声明），并复制到输出目录供运行时 SetIcon -->
-    <Content Include="Assets\appicon.ico" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

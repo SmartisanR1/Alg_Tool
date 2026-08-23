@@ -3,10 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <StackPanel Padding="32,24" Spacing="12" MaxWidth="720" HorizontalAlignment="Left">
+    <StackPanel Padding="40,32,40,48" Spacing="16" MaxWidth="1000" HorizontalAlignment="Center">
         <TextBlock x:Name="TitleText" Style="{StaticResource TitleTextBlockStyle}"/>
-        <InfoBar Severity="Informational" IsOpen="True"
-                 Title="待移植"
-                 Message="此功能页面尚未实现。后端密码引擎已就绪，参照 HashPage 补齐本页 UI 即可。"/>
+        <TextBlock Text="此工作区已纳入新版工具台。算法引擎能力已准备就绪，完整的参数面板将在后续版本开放。"
+                   TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        <InfoBar Severity="Informational" IsOpen="True" IsClosable="False"
+                 Title="工作区准备中"
+                 Message="请使用顶部导航切换到已经可用的摘要、密钥工具或编码转换。"/>
     </StackPanel>
 </Page>

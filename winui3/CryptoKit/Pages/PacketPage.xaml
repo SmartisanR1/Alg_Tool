@@ -1,0 +1,127 @@
+<Page
+    x:Class="CryptoKit.Pages.PacketPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1160" HorizontalAlignment="Center">
+            <StackPanel Spacing="6">
+                <TextBlock Text="协议联调" Style="{StaticResource TitleTextBlockStyle}"/>
+                <TextBlock Text="TLS/TLCP 连接测试、报文收发与本地双向演示，用于排查密码协议协商与报文格式。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <TabView IsAddTabButtonVisible="False">
+                <TabViewItem Header="TLS 连接测试" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="主机" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TlsHostInput" PlaceholderText="例如 www.example.com"/>
+                            <TextBlock Text="端口" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TlsPortInput" Text="443"/>
+                            <TextBlock Text="协议" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="TlsProtoBox" SelectedIndex="2">
+                                <ComboBoxItem Content="TLS 1.0" Tag="tls1.0"/>
+                                <ComboBoxItem Content="TLS 1.1" Tag="tls1.1"/>
+                                <ComboBoxItem Content="TLS 1.2" Tag="tls1.2"/>
+                                <ComboBoxItem Content="TLS 1.3" Tag="tls1.3"/>
+                                <ComboBoxItem Content="TLCP" Tag="tlcp"/>
+                            </ComboBox>
+                            <TextBlock Text="ServerName（可选）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TlsServerNameInput" PlaceholderText="SNI，留空用主机名"/>
+                            <CheckBox x:Name="TlsInsecureCheck" Content="跳过证书校验"/>
+                            <Button x:Name="TlsConnectBtn" Content="连接测试" Style="{StaticResource AccentButtonStyle}" Click="OnTlsConnect"/>
+                            <Button x:Name="ListCiphersBtn" Content="列出支持的密码套件" Click="OnListCiphers"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="连接结果" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TlsResultBox" Height="420" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="握手结果、密码套件与证书链将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="报文收发" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="主机" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktHostInput" PlaceholderText="例如 127.0.0.1"/>
+                            <TextBlock Text="端口" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktPortInput" Text="443"/>
+                            <TextBlock Text="网络模式" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="PktNetworkBox" SelectedIndex="0">
+                                <ComboBoxItem Content="auto" Tag="auto"/>
+                                <ComboBoxItem Content="tcp" Tag="tcp"/>
+                                <ComboBoxItem Content="tcp4" Tag="tcp4"/>
+                                <ComboBoxItem Content="tcp6" Tag="tcp6"/>
+                            </ComboBox>
+                            <TextBlock Text="传输模式" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="PktTransportBox" SelectedIndex="0">
+                                <ComboBoxItem Content="plain（明文）" Tag="plain"/>
+                                <ComboBoxItem Content="tls" Tag="tls"/>
+                                <ComboBoxItem Content="tlcp" Tag="tlcp"/>
+                            </ComboBox>
+                            <TextBlock Text="ServerName（可选）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktServerNameInput" PlaceholderText="TLS/TLCP 时使用"/>
+                            <CheckBox x:Name="PktInsecureCheck" Content="跳过证书校验"/>
+                            <TextBlock Text="报文头长度（0-4 字节）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktHeaderLenInput" Text="0"/>
+                            <TextBlock Text="超时（秒）" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktTimeoutInput" Text="5"/>
+                            <TextBlock Text="载荷格式" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="PktPayloadFmtBox" SelectedIndex="0">
+                                <ComboBoxItem Content="text" Tag="text"/>
+                                <ComboBoxItem Content="hex" Tag="hex"/>
+                            </ComboBox>
+                            <TextBlock Text="响应格式" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="PktRespFmtBox" SelectedIndex="0">
+                                <ComboBoxItem Content="text" Tag="text"/>
+                                <ComboBoxItem Content="hex" Tag="hex"/>
+                            </ComboBox>
+                            <TextBlock Text="发送载荷" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktPayloadInput" AcceptsReturn="True" TextWrapping="Wrap" Height="100" PlaceholderText="要发送的报文内容…"/>
+                            <Button x:Name="SendPacketBtn" Content="发送" Style="{StaticResource AccentButtonStyle}" Click="OnSendPacket"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="响应结果" FontWeight="SemiBold"/>
+                            <TextBox x:Name="PktResultBox" Height="460" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="响应内容将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+
+                <TabViewItem Header="TLS · TLCP 演示" IsClosable="False">
+                    <Grid Padding="4,20,4,4" ColumnSpacing="28">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="协议" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="DemoProtoBox" SelectedIndex="0">
+                                <ComboBoxItem Content="TLS 1.2" Tag="tls1.2"/>
+                                <ComboBoxItem Content="TLS 1.3" Tag="tls1.3"/>
+                                <ComboBoxItem Content="TLCP" Tag="tlcp"/>
+                            </ComboBox>
+                            <Button x:Name="DemoStartBtn" Content="启动本地服务端" Style="{StaticResource AccentButtonStyle}" Click="OnDemoStart"/>
+                            <TextBlock x:Name="DemoPortText" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <Button x:Name="DemoConnectBtn" Content="客户端连接" Click="OnDemoConnect"/>
+                            <TextBlock Text="发送方" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <ComboBox x:Name="DemoSideBox" SelectedIndex="0">
+                                <ComboBoxItem Content="client（客户端发）" Tag="client"/>
+                                <ComboBoxItem Content="server（服务端发）" Tag="server"/>
+                            </ComboBox>
+                            <TextBox x:Name="DemoMsgInput" PlaceholderText="要发送的消息"/>
+                            <Button x:Name="DemoSendBtn" Content="发送消息" Click="OnDemoSend"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="DemoRefreshBtn" Content="刷新状态" Click="OnDemoRefresh"/>
+                                <Button x:Name="DemoCloseBtn" Content="关闭会话" Click="OnDemoClose"/>
+                            </StackPanel>
+                            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="演示流程"
+                                     Message="① 启动服务端 → ② 客户端连接（完成握手）→ ③ 任选一方发送消息 → ④ 刷新查看双方时间线与收到的消息。"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="8">
+                            <TextBlock Text="协商日志" FontWeight="SemiBold"/>
+                            <TextBox x:Name="DemoLogBox" Height="440" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="握手时间线与收发消息将显示在这里"/>
+                        </StackPanel>
+                    </Grid>
+                </TabViewItem>
+            </TabView>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
