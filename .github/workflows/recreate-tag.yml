@@ -1,0 +1,72 @@
+name: Recreate v1.0.0 tag
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  recreate-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recreate v1.0.0 tag and Release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const tag = 'v1.0.0';
+            const ref = `refs/tags/${tag}`;
+            core.info(`Target repo: ${owner}/${repo}`);
+
+            // Get main branch HEAD SHA
+            const headRef = await github.rest.git.getRef({ owner, repo, ref: 'heads/main' });
+            const sha = headRef.data.object.sha;
+            core.info(`Main HEAD SHA: ${sha}`);
+
+            // Delete tag if exists
+            try {
+              await github.rest.git.getRef({ owner, repo, ref });
+              await github.rest.git.deleteRef({ owner, repo, ref });
+              core.info(`Deleted existing tag ${tag}`);
+            } catch (e) {
+              core.info(`Tag ${tag} not found or could not be deleted: ${e.message}`);
+            }
+
+            // Create annotated tag object
+            const tagObj = await github.rest.git.createTag({
+              owner,
+              repo,
+              tag,
+              message: `Recreated ${tag}`,
+              object: sha,
+              type: 'commit',
+              tagger: {
+                name: context.actor,
+                email: `${context.actor}@users.noreply.github.com`,
+                date: new Date().toISOString()
+              }
+            });
+            core.info(`Created tag object: ${tagObj.data.sha}`);
+
+            // Create ref pointing to the tag object
+            await github.rest.git.createRef({ owner, repo, ref, sha: tagObj.data.sha });
+            core.info(`Created ref ${ref} -> ${tagObj.data.sha}`);
+
+            // Create or update Release
+            try {
+              const rel = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
+              await github.rest.repos.updateRelease({ owner, repo, release_id: rel.data.id, tag_name: tag, name: tag, body: 'Recreated tag via workflow', draft: false, prerelease: false });
+              core.info(`Updated release for ${tag}`);
+            } catch (e) {
+              if (e.status === 404) {
+                await github.rest.repos.createRelease({ owner, repo, tag_name: tag, name: tag, body: 'Recreated tag via workflow', draft: false, prerelease: false });
+                core.info(`Created release for ${tag}`);
+              } else {
+                throw e;
+              }
+            }
