@@ -21,7 +21,7 @@ go run ./cmd/engine               # 本地跑引擎（stdin 输入 JSON 行）
 .\winui3\build.ps1                # 产物 dist\winui3\
 ```
 
-**版本约束**：Go 1.26、.NET 10 SDK（WinUI3 目标框架 `net10.0-windows10.0.19041.0`）。发布流程见 `.github/workflows/release.yml`（push `v*` tag 触发）。
+**版本约束**：Go 1.26、.NET 10 SDK（WinUI3 目标框架 `net10.0-windows10.0.19041.0`）。发布流程见 `.github/workflows/release.yml`（push 到 `main` 或手动触发，自动把 `v1.0.0` 标签移到最新提交并发布/更新 GitHub Release）。
 
 ## 架构总览
 
