@@ -33,17 +33,26 @@ public sealed partial class MainWindow : Window
         ThemeService.Apply(_theme, Content as FrameworkElement);
         UpdateThemeButton();
 
-        // Mica 后层：WinUI3 原生，自动跟随系统主题采样桌面壁纸
-        SystemBackdrop = new MicaBackdrop { Kind = MicaKind.Base };
+        // Mica 后层：WinUI3 原生，自动跟随系统主题采样桌面壁纸。
+        // 个别环境（远程桌面/精简显卡/不支持合成器）可能抛错，失败则退回普通背景，不影响窗口显示。
+        try
+        {
+            SystemBackdrop = new MicaBackdrop { Kind = MicaKind.Base };
+        }
+        catch { /* 忽略：降级为普通窗口背景 */ }
 
-        // 标题栏延伸到内容区，让 Mica 覆盖整个窗口
-        AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-        AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-        SetTitleBar(AppTitleBar);
+        // 标题栏延伸到内容区。失败则退回系统默认标题栏，绝不因此丢掉窗口。
+        try
+        {
+            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+            SetTitleBar(AppTitleBar);
 
-        // 为主题按钮让出右侧系统标题栏按钮（最小化/最大化/关闭）的空间
-        var rightInset = Math.Max(AppWindow.TitleBar.RightInset, 138);
-        ThemeButton.Margin = new Thickness(0, 0, rightInset + 8, 0);
+            // 为主题按钮让出右侧系统标题栏按钮（最小化/最大化/关闭）的空间
+            var rightInset = Math.Max(AppWindow.TitleBar.RightInset, 138);
+            ThemeButton.Margin = new Thickness(0, 0, rightInset + 8, 0);
+        }
+        catch { /* 忽略：退回系统默认标题栏 */ }
 
         // 恢复窗口尺寸
         var (w, h) = (_settings.WindowWidth, _settings.WindowHeight);

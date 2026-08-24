@@ -2,8 +2,9 @@
 # ---------------------------------------------------------------
 # 触发：push 到 main 或手动运行 → 编译 Windows WinUI3 + Go 引擎，
 #       把 v1.0.0 标签移动到当前提交，并创建/更新 GitHub Release。
-# 产物：CryptoKit-v1.0.0-win-x64.zip（含 CryptoKit.exe + CryptoKitEngine.exe，
-#       解压后整目录复制到任意位置即可运行）
+# 产物：CryptoKit-v1.0.0-win-x64.zip（自包含部署，含 CryptoKit.exe、Windows App SDK
+#       原生运行时 DLL、resources.pri 与 CryptoKitEngine.exe；解压后整目录复制到任意
+#       位置即可运行）。发布前自动冒烟测试，确认主窗口真正出现。
 name: Release
 
 on:
@@ -49,6 +50,40 @@ jobs:
           GOOS: windows
           GOARCH: amd64
         run: go build -trimpath -ldflags "-s -w" -o publish/CryptoKitEngine.exe ./cmd/engine
+
+      # 冒烟测试：真实启动 CryptoKit.exe，验证主窗口确实出现后才允许打标签发布。
+      # 防止「进程在运行但没有窗口 / 双击打不开」类回归漏到用户手里。
+      - name: 冒烟测试：验证主窗口能正常出现
+        shell: pwsh
+        run: |
+          $exe = Join-Path (Get-Location) "publish\CryptoKit.exe"
+          if (-not (Test-Path $exe)) { throw "未找到 CryptoKit.exe: $exe" }
+
+          $p = Start-Process -FilePath $exe -WorkingDirectory (Split-Path $exe) -PassThru
+          $deadline = (Get-Date).AddSeconds(30)
+          $ok = $false
+          while ((Get-Date) -lt $deadline) {
+            Start-Sleep -Milliseconds 500
+            $p.Refresh()
+            if ($p.HasExited) { break }
+            if ($p.MainWindowHandle -ne 0) { $ok = $true; break }
+          }
+
+          $cleanup = {
+            Get-Process -Name "CryptoKit" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+            Get-Process -Name "CryptoKitEngine" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          }
+          if (-not $ok) {
+            & $cleanup
+            $state = if ($p.HasExited) { "进程提前退出，ExitCode=$($p.ExitCode)" } else { "进程存活但 30 秒内未出现主窗口" }
+            throw "冒烟测试失败：$state"
+          }
+          Write-Host "冒烟测试通过：主窗口出现，Title='$($p.MainWindowTitle)'"
+
+          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          Start-Sleep -Seconds 2
+          & $cleanup
+          Write-Host "已清理测试进程。"
 
       - name: 打包 zip
         shell: pwsh

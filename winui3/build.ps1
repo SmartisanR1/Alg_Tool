@@ -1,6 +1,11 @@
 # CryptoKit WinUI3 构建脚本（在 Windows 上运行）
-# 产物：dist/winui3/ 目录，仅保留 CryptoKit.exe + CryptoKitEngine.exe + README.txt。
+# 产物：dist/winui3/ 目录，含 CryptoKit.exe、Windows App SDK 原生运行时 DLL、
+#       resources.pri 与 CryptoKitEngine.exe + README.txt。
 #       整目录复制即可运行（绿色便携，无安装、无 MSIX、无 WebView2）。
+#
+# 注意：不要启用 PublishSingleFile。WinUI3 自包含 + 单文件发布存在已知 bug，
+#       应用启动后不显示窗口（microsoft/WindowsAppSDK#6248），且官方指南要求
+#       WinUI3 原生运行时必须保留为独立文件，采用目录级 xcopy 部署。
 #
 # 用法：
 #   .\winui3\build.ps1                          # 默认 win-x64，免安装便携版
@@ -46,6 +51,8 @@ CryptoKit 便携版
 
 双击 CryptoKit.exe 即可使用，无需安装 .NET 或 Windows App SDK。
 CryptoKitEngine.exe 是本地密码计算组件，请与主程序放在同一目录。
+Windows App SDK 原生运行时 DLL 与 resources.pri 是主程序运行所需，
+请保持它们与主程序在同一目录，不要单独移动或删除。
 "@ | Set-Content -Path (Join-Path $out "README.txt") -Encoding utf8
 
 Write-Host "==> 完成！产物目录: $out"

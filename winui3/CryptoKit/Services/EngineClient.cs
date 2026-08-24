@@ -30,9 +30,9 @@ public sealed class EngineClient : IDisposable
     /// <summary>启动引擎子进程。引擎必须与本程序位于同一目录。</summary>
     public void Start()
     {
-        var exe = Path.Combine(AppContext.BaseDirectory, EngineExe);
+        var exe = ResolveEnginePath();
         if (!File.Exists(exe))
-            throw new FileNotFoundException($"未找到密码引擎 {EngineExe}，请先运行构建脚本。", exe);
+            throw new FileNotFoundException($"未找到密码引擎 {EngineExe}，请确认与主程序放在同一目录。", exe);
 
         var psi = new ProcessStartInfo
         {
@@ -54,6 +54,30 @@ public sealed class EngineClient : IDisposable
         // 读取响应循环 + stderr 排空（防止缓冲区填满导致死锁）
         _ = Task.Run(ReadLoopAsync);
         _ = Task.Run(DrainStderrAsync);
+    }
+
+    /// <summary>
+    /// 解析引擎可执行文件路径。依次尝试：应用基目录（AppContext.BaseDirectory）、
+    /// 真实 exe 所在目录（Environment.ProcessPath，单文件/自解压模式下基目录可能
+    /// 指向临时解压区）、当前工作目录。取第一个实际存在的路径。
+    /// </summary>
+    private static string ResolveEnginePath()
+    {
+        var candidates = new[]
+        {
+            AppContext.BaseDirectory,
+            Path.GetDirectoryName(Environment.ProcessPath) ?? string.Empty,
+            Environment.CurrentDirectory,
+        };
+
+        foreach (var dir in candidates)
+        {
+            if (string.IsNullOrEmpty(dir)) continue;
+            var exe = Path.Combine(dir, EngineExe);
+            if (File.Exists(exe)) return exe;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, EngineExe);
     }
 
     /// <summary>调用引擎方法，返回 result 的原始 JSON 元素。</summary>

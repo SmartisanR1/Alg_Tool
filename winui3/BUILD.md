@@ -21,19 +21,24 @@ winui3/build.ps1   # 一键构建脚本
 .\winui3\build.ps1 -Runtime win-arm64
 ```
 
-产物在 `dist\winui3\`，只有以下三个文件：
+产物在 `dist\winui3\`，包含主程序、Windows App SDK 原生运行时与密码引擎：
 
 ```
-CryptoKit.exe          # 单文件 WinUI3 主程序
+CryptoKit.exe          # WinUI3 主程序
+Microsoft.UI.Xaml.dll  # Windows App SDK 原生运行时（自包含部署）
+*.dll                  # 其余 Windows App SDK / .NET 运行时文件
+resources.pri          # MRT 资源表（XAML 加载必需）
 CryptoKitEngine.exe    # 本地 Go 密码引擎
 README.txt             # 使用说明
 ```
 
 **整目录复制到任意位置即可运行**，双击 `CryptoKit.exe`。不要单独移动或删除
-`CryptoKitEngine.exe`，主程序会从同一目录启动它。
+`CryptoKitEngine.exe` 及任何运行时 DLL，主程序依赖同目录文件完成启动。
 
-为实现“一个主程序”的整洁目录，WinUI3 的原生组件会在首次启动时由 Windows
-自解压到系统运行区；这不需要用户安装任何运行时，也不会在发布目录产生 DLL 散文件。
+> ⚠️ **不要启用 `PublishSingleFile`（单文件发布）**。WinUI3 自包含 + 单文件模式存在
+> 已知 bug：应用进程启动后不显示窗口（microsoft/WindowsAppSDK#6248、#3718），且
+> 官方自包含部署指南明确要求 WinUI3 的原生运行时必须保留为独立文件。本项目采用
+> 官方推荐的目录级 xcopy 部署：解压 zip 后整目录即为可运行程序，无需安装任何运行时。
 
 > 首次 `dotnet publish` 会从 NuGet 下载 Windows App SDK 包，需联网；
 > 若 csproj 中的 `Microsoft.WindowsAppSDK` 版本无法还原，升级到最新稳定版即可。
@@ -41,7 +46,7 @@ README.txt             # 使用说明
 ## 零残留设计（关闭即清理）
 
 1. **Go 引擎**：纯静态二进制，stdio 通信，不落盘、无临时目录、无缓存。
-2. **WinUI3**：无 WebView2；以自包含单文件发布，不依赖机器预装的 Windows App SDK。
+2. **WinUI3**：无 WebView2；以自包含目录部署（非单文件），不依赖机器预装的 Windows App SDK。
 3. **进程清理**：主窗口关闭时 `EngineClient.Dispose()` 关闭 stdin 并 `Kill`，杜绝孤儿进程。
 4. **设置**：默认写 exe 同目录 `settings.json`（几 KB，便携）；exe 目录只读时才回退 `%LOCALAPPDATA%\CryptoKit\settings.json`。
 

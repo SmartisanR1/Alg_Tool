@@ -15,13 +15,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- 便携发布：不安装、不依赖目标机器已有的 .NET 或 Windows App SDK。
-         发布时将 UI 收拢为单个 exe；CryptoKitEngine.exe 作为唯一同级协作进程。 -->
+         采用「目录级 xcopy 部署」：Windows App SDK 原生运行时以独立 DLL 置于 exe
+         同级目录。不要启用 PublishSingleFile——自包含 + 单文件模式存在已知 bug，
+         应用启动后不显示窗口（microsoft/WindowsAppSDK#6248、#3718），且官方
+         自包含部署指南明确要求 WinUI3 的原生运行时必须保留为独立文件。 -->
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
-    <PublishSingleFile>true</PublishSingleFile>
-    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <!-- MRT 资源统一命名为 resources.pri，规避单文件/exe 改名场景下资源查找失败的已知问题 -->
+    <ProjectPriFileName>resources.pri</ProjectPriFileName>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <!-- 只保留中/英卫星程序集，去掉其余语言包 -->
