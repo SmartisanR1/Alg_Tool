@@ -63,7 +63,7 @@ public partial class App : Application
         e.Handled = true; // 单个页面错误不拖垮整个应用
     }
 
-    private static void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    private static void OnAppDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
     {
         CrashLog.Write(e.ExceptionObject as Exception, "AppDomain 未处理异常");
     }
