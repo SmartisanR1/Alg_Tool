@@ -21,21 +21,21 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Tag="hash" Click="OnToolClick" HorizontalContentAlignment="Stretch" Padding="20,18">
                     <StackPanel Spacing="10" HorizontalAlignment="Left">
-                        <SymbolIcon Symbol="Document" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
+                        <FontIcon Glyph="&#xE8A5;" FontFamily="Segoe MDL2 Assets" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
                         <TextBlock Text="哈希摘要" FontSize="18" FontWeight="SemiBold"/>
                         <TextBlock Text="SHA-2、SHA-3、SM3、BLAKE 系列" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                 </Button>
                 <Button Grid.Column="1" Tag="keys" Click="OnToolClick" HorizontalContentAlignment="Stretch" Padding="20,18">
                     <StackPanel Spacing="10" HorizontalAlignment="Left">
-                        <SymbolIcon Symbol="Permissions" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
+                        <FontIcon Glyph="&#xE8D7;" FontFamily="Segoe MDL2 Assets" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
                         <TextBlock Text="密钥生成" FontSize="18" FontWeight="SemiBold"/>
                         <TextBlock Text="快速生成 RSA 密钥对并导出 PEM" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                 </Button>
                 <Button Grid.Column="2" Tag="tools" Click="OnToolClick" HorizontalContentAlignment="Stretch" Padding="20,18">
                     <StackPanel Spacing="10" HorizontalAlignment="Left">
-                        <SymbolIcon Symbol="Switch" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
+                        <FontIcon Glyph="&#xE8AB;" FontFamily="Segoe MDL2 Assets" Width="24" Height="24" Foreground="{ThemeResource AccentFillColorDefaultBrush}"/>
                         <TextBlock Text="编码转换" FontSize="18" FontWeight="SemiBold"/>
                         <TextBlock Text="文本、Hex 与 Base64 的本地转换" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>

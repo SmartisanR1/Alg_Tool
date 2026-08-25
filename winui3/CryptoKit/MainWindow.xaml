@@ -53,14 +53,33 @@
             SelectionChanged="OnNavSelectionChanged">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="工作台" Tag="home" Icon="Home"/>
-                <NavigationViewItem Content="摘要 / MAC" Tag="hash" Icon="Document"/>
-                <NavigationViewItem Content="密钥工具" Tag="keys" Icon="Permissions"/>
-                <NavigationViewItem Content="对称算法" Tag="symmetric" Icon="Lock"/>
-                <NavigationViewItem Content="公钥 / 国密" Tag="asymmetric" Icon="Certificate"/>
-                <NavigationViewItem Content="后量子" Tag="pqc" Icon="World"/>
-                <NavigationViewItem Content="编码转换" Tag="tools" Icon="Switch"/>
-                <NavigationViewItem Content="协议联调" Tag="packet" Icon="Globe"/>
+                <!-- 图标一律用 FontIcon + MDL2 字形码，不要用 Icon="字符串"（XAML 的
+                     IconElement 字符串转换在部分 Symbol 枚举上会抛 XamlParseException，
+                     导致主窗口初始化失败） -->
+                <NavigationViewItem Content="工作台" Tag="home">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE80F;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="摘要 / MAC" Tag="hash">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE8A5;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="密钥工具" Tag="keys">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE8D7;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="对称算法" Tag="symmetric">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE72E;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="公钥 / 国密" Tag="asymmetric">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xEB95;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="后量子" Tag="pqc">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE909;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="编码转换" Tag="tools">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE8AB;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="协议联调" Tag="packet">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame"/>
