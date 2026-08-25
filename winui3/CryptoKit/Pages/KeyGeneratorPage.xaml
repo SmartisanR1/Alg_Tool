@@ -25,9 +25,9 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="10">
                             <TextBlock Text="公钥（PEM）" FontWeight="SemiBold"/>
-                            <TextBox x:Name="PublicKeyBox" Height="150" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
+                            <TextBox x:Name="PublicKeyBox" Height="280" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="公钥将显示在这里"/>
                             <TextBlock Text="私钥（PEM）" FontWeight="SemiBold"/>
-                            <TextBox x:Name="PrivateKeyBox" Height="220" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
+                            <TextBox x:Name="PrivateKeyBox" Height="420" FontFamily="Consolas" FontSize="12" IsReadOnly="True" TextWrapping="Wrap" PlaceholderText="私钥将显示在这里"/>
                         </StackPanel>
                     </Grid>
                 </TabViewItem>

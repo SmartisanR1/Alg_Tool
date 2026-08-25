@@ -43,14 +43,14 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="12">
                             <TextBlock Text="输入文本" FontWeight="SemiBold"/>
-                            <TextBox x:Name="InputBox" Height="150" AcceptsReturn="True" TextWrapping="Wrap"
+                            <TextBox x:Name="InputBox" Height="360" AcceptsReturn="True" TextWrapping="Wrap"
                                      PlaceholderText="输入要计算哈希的内容…"/>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Button x:Name="ComputeButton" Content="计算摘要" Style="{StaticResource AccentButtonStyle}" Click="OnComputeClick"/>
                                 <Button Content="清空" Click="OnClearClick"/>
                             </StackPanel>
                             <TextBlock Text="结果" FontWeight="SemiBold" Margin="0,8,0,0"/>
-                            <TextBox x:Name="ResultBox" IsReadOnly="True" Height="150" TextWrapping="Wrap" FontFamily="Consolas"
+                            <TextBox x:Name="ResultBox" IsReadOnly="True" Height="360" TextWrapping="Wrap" FontFamily="Consolas"
                                      PlaceholderText="计算结果将显示在这里" IsSpellCheckEnabled="False"/>
                         </StackPanel>
                     </Grid>

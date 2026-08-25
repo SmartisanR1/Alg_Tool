@@ -16,6 +16,9 @@ public sealed class AppSettings
     public double WindowWidth { get; set; } = 1440;
     public double WindowHeight { get; set; } = 900;
 
+    /// <summary>窗口是否最大化。默认 true：首次启动即以最大化铺满屏幕，之后记住用户的选择。</summary>
+    public bool IsMaximized { get; set; } = true;
+
     private string? _path;
 
     public void Load()
@@ -31,6 +34,7 @@ public sealed class AppSettings
             Theme = data.Theme;
             WindowWidth = data.WindowWidth > 0 ? data.WindowWidth : 1440;
             WindowHeight = data.WindowHeight > 0 ? data.WindowHeight : 900;
+            IsMaximized = data.IsMaximized;
         }
         catch
         {

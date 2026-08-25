@@ -41,14 +41,16 @@
             </Button>
         </Grid>
 
-        <!-- 主导航 -->
+        <!-- 主导航：Left 侧栏模式，8 个功能项竖向排列、永不出现在溢出菜单里 -->
         <NavigationView
             x:Name="NavView"
             Grid.Row="1"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
-            PaneDisplayMode="Top"
-            IsPaneToggleButtonVisible="False"
+            PaneDisplayMode="Left"
+            IsPaneToggleButtonVisible="True"
+            IsPaneOpen="True"
+            OpenPaneLength="212"
             AlwaysShowHeader="False"
             SelectionChanged="OnNavSelectionChanged">
 
@@ -77,7 +79,7 @@
                 <NavigationViewItem Content="编码转换" Tag="tools">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE8AB;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="协议联调" Tag="packet">
+                <NavigationViewItem Content="报文 · 协议联调" Tag="packet">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;" FontFamily="Segoe MDL2 Assets"/></NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

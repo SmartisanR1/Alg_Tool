@@ -27,7 +27,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="12">
                             <TextBlock Text="数据（Hex）" FontWeight="SemiBold"/>
-                            <TextBox x:Name="DataBox" Height="150" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas"
+                            <TextBox x:Name="DataBox" Height="280" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas"
                                      PlaceholderText="例如：00112233445566778899AABBCCDDEEFF"/>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Button x:Name="EncryptButton" Content="加密" Style="{StaticResource AccentButtonStyle}" Click="OnEncryptClick"/>
@@ -35,7 +35,7 @@
                                 <Button Content="清空" Click="OnClearClick"/>
                             </StackPanel>
                             <TextBlock Text="结果（Hex）" FontWeight="SemiBold" Margin="0,8,0,0"/>
-                            <TextBox x:Name="ResultBox" Height="130" IsReadOnly="True" FontFamily="Consolas" TextWrapping="Wrap" PlaceholderText="计算结果将显示在这里"/>
+                            <TextBox x:Name="ResultBox" Height="280" IsReadOnly="True" FontFamily="Consolas" TextWrapping="Wrap" PlaceholderText="计算结果将显示在这里"/>
                             <TextBlock x:Name="ExtraText" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
                     </Grid>

@@ -14,7 +14,7 @@
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Spacing="10">
                             <TextBlock Text="输入" FontWeight="SemiBold"/>
-                            <TextBox x:Name="InputBox" Height="240" AcceptsReturn="True" TextWrapping="Wrap" PlaceholderText="输入文本或 Hex…"/>
+                            <TextBox x:Name="InputBox" Height="360" AcceptsReturn="True" TextWrapping="Wrap" PlaceholderText="输入文本或 Hex…"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="10">
                             <Button Content="转为 Hex →" Click="OnTextToHexClick"/>
@@ -23,7 +23,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2" Spacing="10">
                             <TextBlock Text="结果" FontWeight="SemiBold"/>
-                            <TextBox x:Name="ResultBox" Height="240" IsReadOnly="True" FontFamily="Consolas" TextWrapping="Wrap" PlaceholderText="转换结果将显示在这里"/>
+                            <TextBox x:Name="ResultBox" Height="360" IsReadOnly="True" FontFamily="Consolas" TextWrapping="Wrap" PlaceholderText="转换结果将显示在这里"/>
                         </StackPanel>
                     </Grid>
                 </TabViewItem>

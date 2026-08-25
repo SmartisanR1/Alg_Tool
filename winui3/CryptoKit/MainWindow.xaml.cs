@@ -54,17 +54,26 @@ public sealed partial class MainWindow : Window
         }
         catch { /* 忽略：退回系统默认标题栏 */ }
 
-        // 恢复窗口尺寸（并把尺寸钳制在当前显示器工作区内，防止分辨率变小/设置残留导致窗口开不全）
-        var (w, h) = (_settings.WindowWidth, _settings.WindowHeight);
-        try
+        // 恢复窗口：上次最大化则继续最大化（首次启动默认最大化，铺满屏幕）；
+        // 否则恢复保存的尺寸，并钳制在当前显示器工作区内（分辨率变小/设置残留不导致窗口开不全）
+        if (_settings.IsMaximized)
         {
-            var work = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest).WorkArea;
-            w = Math.Min(w, work.Width);
-            h = Math.Min(h, work.Height);
+            try { AppWindow.SetPresenter(AppWindowPresenterKind.Maximized); }
+            catch { /* 忽略：最大化失败则用默认尺寸 */ }
         }
-        catch { /* 忽略：钳制失败则按原尺寸 */ }
-        if (w > 0 && h > 0)
-            AppWindow.Resize(new SizeInt32((int)w, (int)h));
+        else
+        {
+            var (w, h) = (_settings.WindowWidth, _settings.WindowHeight);
+            try
+            {
+                var work = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest).WorkArea;
+                w = Math.Min(w, work.Width);
+                h = Math.Min(h, work.Height);
+            }
+            catch { /* 忽略：钳制失败则按原尺寸 */ }
+            if (w > 0 && h > 0)
+                AppWindow.Resize(new SizeInt32((int)w, (int)h));
+        }
 
         Closed += OnClosed;
 
@@ -97,7 +106,7 @@ public sealed partial class MainWindow : Window
 
     private static string TitleFor(string tag) => tag switch
     {
-        "packet" => "协议联调",
+        "packet" => "报文 · 协议联调",
         "symmetric" => "对称算法",
         "asymmetric" => "公钥算法 / 国密",
         "pqc" => "后量子",
@@ -126,12 +135,18 @@ public sealed partial class MainWindow : Window
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-        // 记录窗口几何供下次恢复（失败不影响退出）
+        // 记录窗口几何供下次恢复（失败不影响退出）。
+        // 最大化时保存最大化状态、保留上一份普通尺寸；普通尺寸时保存当前尺寸。
         try
         {
-            var size = AppWindow.Size;
-            _settings.WindowWidth = size.Width;
-            _settings.WindowHeight = size.Height;
+            var isMaximized = AppWindow.Presenter.Kind == AppWindowPresenterKind.Maximized;
+            _settings.IsMaximized = isMaximized;
+            if (!isMaximized)
+            {
+                var size = AppWindow.Size;
+                _settings.WindowWidth = size.Width;
+                _settings.WindowHeight = size.Height;
+            }
             _settings.Save();
         }
         catch { /* 忽略 */ }
