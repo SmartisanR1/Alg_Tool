@@ -58,7 +58,7 @@ public sealed partial class MainWindow : Window
         // 否则恢复保存的尺寸，并钳制在当前显示器工作区内（分辨率变小/设置残留不导致窗口开不全）
         if (_settings.IsMaximized)
         {
-            try { AppWindow.SetPresenter(AppWindowPresenterKind.Maximized); }
+            try { if (AppWindow.Presenter is OverlappedPresenter op) op.Maximize(); }
             catch { /* 忽略：最大化失败则用默认尺寸 */ }
         }
         else
@@ -139,7 +139,7 @@ public sealed partial class MainWindow : Window
         // 最大化时保存最大化状态、保留上一份普通尺寸；普通尺寸时保存当前尺寸。
         try
         {
-            var isMaximized = AppWindow.Presenter.Kind == AppWindowPresenterKind.Maximized;
+            var isMaximized = AppWindow.Presenter is OverlappedPresenter p && p.State == OverlappedPresenterState.Maximized;
             _settings.IsMaximized = isMaximized;
             if (!isMaximized)
             {
