@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ScrollViewer>
-        <StackPanel Padding="40,32,40,48" Spacing="28" MaxWidth="1180" HorizontalAlignment="Center">
+        <StackPanel Padding="40,32,40,48" Spacing="28" MaxWidth="1440" HorizontalAlignment="Center">
             <StackPanel Spacing="8">
                 <TextBlock Text="密码工作台" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="在本机完成计算、转换与密钥操作。选择一个工具立即开始。"

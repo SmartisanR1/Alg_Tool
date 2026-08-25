@@ -13,8 +13,8 @@ public sealed class AppSettings
     private const string FileName = "settings.json";
 
     public ElementTheme Theme { get; set; } = ElementTheme.Default;
-    public double WindowWidth { get; set; } = 1240;
-    public double WindowHeight { get; set; } = 800;
+    public double WindowWidth { get; set; } = 1440;
+    public double WindowHeight { get; set; } = 900;
 
     private string? _path;
 
@@ -29,8 +29,8 @@ public sealed class AppSettings
             var data = JsonSerializer.Deserialize<AppSettings>(json);
             if (data is null) return;
             Theme = data.Theme;
-            WindowWidth = data.WindowWidth > 0 ? data.WindowWidth : 1240;
-            WindowHeight = data.WindowHeight > 0 ? data.WindowHeight : 800;
+            WindowWidth = data.WindowWidth > 0 ? data.WindowWidth : 1440;
+            WindowHeight = data.WindowHeight > 0 ? data.WindowHeight : 900;
         }
         catch
         {

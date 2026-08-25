@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ScrollViewer>
-        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1100" HorizontalAlignment="Center">
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1440" HorizontalAlignment="Center">
             <StackPanel Spacing="6">
                 <TextBlock Text="哈希摘要" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="输入文本，选择算法，即刻得到可复制的十六进制摘要。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>

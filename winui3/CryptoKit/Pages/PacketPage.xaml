@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer>
-        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1160" HorizontalAlignment="Center">
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1440" HorizontalAlignment="Center">
             <StackPanel Spacing="6">
                 <TextBlock Text="协议联调" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="TLS/TLCP 连接测试、报文收发与本地双向演示，用于排查密码协议协商与报文格式。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>

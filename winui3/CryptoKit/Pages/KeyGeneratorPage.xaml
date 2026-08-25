@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer>
-        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1100" HorizontalAlignment="Center">
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1440" HorizontalAlignment="Center">
             <StackPanel Spacing="6">
                 <TextBlock Text="密钥工具" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="在本地安全随机源中生成密钥材料，结果默认只保留在当前窗口。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>

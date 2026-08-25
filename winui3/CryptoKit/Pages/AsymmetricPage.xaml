@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer>
-        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1160" HorizontalAlignment="Center">
+        <StackPanel Padding="40,32,40,48" Spacing="20" MaxWidth="1440" HorizontalAlignment="Center">
             <StackPanel Spacing="6">
                 <TextBlock Text="公钥算法 / 国密" Style="{StaticResource TitleTextBlockStyle}"/>
                 <TextBlock Text="RSA、ECC、Ed25519、SM2/3/4/9 与 ZUC 的本地密钥生成、加解密与签名验签。" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>

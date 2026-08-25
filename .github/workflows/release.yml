@@ -88,6 +88,15 @@ jobs:
           }
           Write-Host "冒烟测试通过：主窗口出现，Title='$title'"
 
+          # 主窗口在时，引擎子进程必须已被拉起，否则算法功能会全部失败
+          $engine = Get-Process -Name "CryptoKitEngine" -ErrorAction SilentlyContinue
+          if (-not $engine) {
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+            & $cleanup
+            throw "冒烟测试失败：主窗口出现但 CryptoKitEngine.exe 未运行，算法功能将全部不可用"
+          }
+          Write-Host "引擎子进程正常：PID=$($engine.Id)"
+
           Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
           Start-Sleep -Seconds 2
           & $cleanup

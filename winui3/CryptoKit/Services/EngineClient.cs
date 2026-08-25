@@ -100,11 +100,21 @@ public sealed class EngineClient : IDisposable
     }
 
     /// <summary>调用引擎方法并反序列化为指定结果类型。</summary>
+    /// <remarks>
+    /// Go 端输出 camelCase JSON（success/privateKey/...），C# 模型用 PascalCase 属性；
+    /// System.Text.Json 默认区分大小写，因此必须开启 PropertyNameCaseInsensitive，
+    /// 否则所有结果字段都绑定不上（Success 恒为 false），表现为“算法全部不可用”。
+    /// </remarks>
     public async Task<T> CallAsync<T>(string method, params object?[] args)
     {
         var element = await CallAsync(method, args).ConfigureAwait(false);
-        return element.Deserialize<T>() ?? throw new JsonException($"无法反序列化 {method} 的返回值为 {typeof(T).Name}");
+        return element.Deserialize<T>(DeserializeOptions) ?? throw new JsonException($"无法反序列化 {method} 的返回值为 {typeof(T).Name}");
     }
+
+    private static readonly JsonSerializerOptions DeserializeOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
 
     private async Task ReadLoopAsync()
     {

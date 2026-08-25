@@ -54,8 +54,15 @@ public sealed partial class MainWindow : Window
         }
         catch { /* 忽略：退回系统默认标题栏 */ }
 
-        // 恢复窗口尺寸
+        // 恢复窗口尺寸（并把尺寸钳制在当前显示器工作区内，防止分辨率变小/设置残留导致窗口开不全）
         var (w, h) = (_settings.WindowWidth, _settings.WindowHeight);
+        try
+        {
+            var work = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest).WorkArea;
+            w = Math.Min(w, work.Width);
+            h = Math.Min(h, work.Height);
+        }
+        catch { /* 忽略：钳制失败则按原尺寸 */ }
         if (w > 0 && h > 0)
             AppWindow.Resize(new SizeInt32((int)w, (int)h));
 
